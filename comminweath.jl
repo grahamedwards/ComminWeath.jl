@@ -6,22 +6,23 @@
 run_name = "comminweath_out"
 fileout_prefix = "~/Dropbox/GHE/Science/4_U-Series/Comminution/Comminution_Glacial/Taylor Valley/model_results/"
 ## Grain Sizes, Ages, Detrital initials:
-a = [  40 25 15 5 ]' *1e-6 #um -> m ~~ Grain diameters
- tcom = [ 10 100 300 1000 1500]' * 1000; # ka
+a = [ 40 25 15 ]' *1e-6 #um -> m ~~ Grain diameters
+ tcom = [10 100 300 500 1000]' * 1000; # ka
 
-AoU = .95 # initial activity ratio of the provenance rock
- AoTh = .95
+AoU = 0.95 # initial activity ratio of the provenance rock
+ AoTh = 0.95
 
 ## Concentrations:
 
-U_dtr = 300. # ng/g
+U_dtr = 200. # ng/g
  U_auth = 1000.# ng/g
 
 ## Weathering/Authigenic phase parameters:
 
-k = 0.5e-7 # g/[m2 a] ~~ Rate of alteration to authigenic phase
- auth48 = 1.25 # (234U/238U) of authigenic phase
- auth08 = 1.25 # (230U/238U) of authigenic phase
+k_coeff = 5e-6 #1e-6 # g/[m2 a] ~~ Rate of alteration to authigenic phase
+ k_power = 1/2
+ auth48 = 10 # (234U/238U) of authigenic phase
+ auth08 = 10 # (230U/238U) of authigenic phase
 
 ## Grain and alpha-recoil physical parameters
 K = 10 # Cartwright, 1962. 10 is ~ best value. K=6 -> sphere
@@ -85,6 +86,9 @@ for i = 1:length(tcom)
 
 
      for j = 2: nit #start on second timestep.
+
+         k= k_coeff * k_power * tlin[j]^(k_power-1)
+
          N238_ev[j] = N238_ev[j-1] +
                     dt *
                     ( k * S * (Nau_238 - N238_ev[j-1]) -  #see p. 77 in notes
@@ -134,7 +138,8 @@ ylabel!("(234U/238U)")
         p1=plot!(A230_ev[i,length(tcom),:],A234_ev[i,length(tcom),:],
         color= :gray, label="")
     end
-p2 = plot(tcom/1000,slope_int[:,2], label ="")
+p2 = plot(tcom/1000,slope_int[:,2], label ="",ylim=(-1,1))
+
 ylabel!("slope");xlabel!("Age (ka)")
 
 plot(p1,p2, layout=(1,2))
