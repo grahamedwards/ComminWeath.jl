@@ -28,9 +28,11 @@ U_dtr =  [ 210 180 160 130]' #ng/g
 function comminweath(diameter, grain, detrital, wxauth, rind; timeseries)
 ```
 
-Calculates post-comminution U-series evolutions for a grain of a given `diameter` (in μm) over a `timeseries` (`<: AbstractRange`) in years (default=0:1:2e6). This history depends on `grain` morphology, `detrital`, authigenic weathering (`wxauth`), and soluble authigenic `rind` parameters, each given as a `NamedTuple`.
+Calculates post-comminution U-series evolutions for a grain of a given `diameter` (in μm) over a `timeseries` (`<: AbstractRange`) in years (default=0:1:2e6). 
 
-Outputs a `NamedTuple` containing `timeseries` and vectors of U elemental and isotopic evolutions with corresponding indices.
+The history depends on grain morphology as well as the `detrital`, authigenic weathering (`wxauth`), and soluble authigenic `rind` parameters; respectively represented by `mutable struct` types `Grain`, `Detrital`, `WxAuth`, and `Rind`. See the docs of these types for more details.
+
+Outputs a `NamedTuple` containing the `timeseries` and vectors of U elemental and isotopic evolutions with corresponding indices.
 
 | key  | description                                  |
 | ---- | -------------------------------------------- |
@@ -145,7 +147,14 @@ function comminweath(diameter::Number, grain::Grain, detrital::Detrital, wxauth:
     (; t=timeseries, A234, A230, cU, etc = (; bulk_A234, bulk_A230, bulk_cU, rind_A234, rind_A230))
 end 
 
+"""
 
+```julia
+drawdates(dates, evs::NamedTuple)
+```
+
+Returns the (²³⁴U/²³⁸U) (`A234`), (²³⁰Th/²³⁸U) (`A230`), and U concentration (`cU`) of a sediment grain for a collection of `dates` in a U-series history (`evs`) from the `comminweath` function.
+"""
 function drawdates(dates,evs::NamedTuple)
     n = length(dates)
     d = dates .* 1e3
