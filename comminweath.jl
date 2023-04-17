@@ -5,24 +5,10 @@
  # ~~ Graham Harper Edwards ~~
 
 
-
-function update(x::NamedTuple,nm::Symbol,y)
-    k = keys(x)
-    @assert nm ∈ k
-    v = collect(values(x))
-    v[findfirst(isequal(nm),k)]= y
-    NamedTuple{k}(v) 
-end
-
-
-
-
-
-
-
 include("measured-data.jl")
 meas = TaylorIII
 include("decay-constants.jl")
+include("structs.jl")
 
 cd(@__DIR__)
 run_name = "comminwx_out" #comminweath_out
@@ -34,37 +20,6 @@ tcom = [ 0 400 1500]' # ka
 U_dtr =  [ 210 180 160 130]' #ng/g 
     #|| [U]s correspond with grain sizes in 'a' above
     # should be [300 210 180 160]
-
-detrital = (cU = 210, # ng/g concentration of U in detrital component
-            r48 = 1., # initial (²³⁴U/²³⁸U) of the provenance rock
-            r08 = 1. ) # # initial (²³⁰Th/²³⁸U) of the provenance rock
-
-## Weathering/Authigenic phase parameters:
-wxauth = (
-    sa_dependent = true, # Surface area dependent weathering
-    k = 0.0e-6, # Rate of alteration to authigenic phase (g/[m2 a] OR g/[g a]), (initial rate if a power-law relationship is used)
-    k_power = 1, # Exponent on k, if using a power-law weathering rate. Not explored in this study, so set to 1 for constant weathering rate, but there if you want it!
-    cU = 1000., # ng/g concentration of U in authigenic component
-    r48 = 2, # (²³⁴U/²³⁸U) of authigenic phase
-    r08 = 3) # (²³⁰Th/²³⁸U) of authigenic phase
-
-## Authigenic rind parameters
-rind = (
-    evolve = true, # Does the rind evolve?
-    p = .5,  # proportion of grain covered by rind (q on notes p.79)
-    z = 0.1 , # um -> m ~~ thickness of nondetrital rind.
-    rho = 2500, #kg/m³ ~~ nondetrital rind phase density
-    cU = 2000., # ng/g ~~ concentration of U in soluble rind component
-    r48 = 3,  # initial (²³⁴U/²³⁸U) of nondetrital rind
-    r08 = 4.6 ) # initial (²³⁰Th/²³⁸U) of nondetrital rind
-
-## Grain and alpha-recoil physical parameters
-grain = (
-    K = 10, # grain shape factor after Cartwright, 1962, doi:10.1093/annhyg/5.3.163 
-    rfr = 7,  # surface roughness factor after White et al., 1996, doi: 10.1016/0016-7037(96)00106-8
-    rho = 2650, #kg/m³ ~~ sediment density
-    L234 = 34, # nm  ~~ recoil length of ²³⁴U in framework silicates (SRIM in 2008 -> 30 nm)
-    L230 = 37 ) # nm ~~ recoil length of ²³⁰Th in framework silicates (SRIM in 2008 -> 37 nm)
     
 
 """
@@ -88,7 +43,7 @@ Outputs a `NamedTuple` containing `timeseries` and vectors of U elemental and is
 | ---- | -------------------------------------------- |
 
 """
-function comminweath(diameter::Number, grain::NamedTuple, detrital::NamedTuple, wxauth::NamedTuple, rind::NamedTuple; timeseries::AbstractRange=0:1:2e6)
+function comminweath(diameter::Number, grain::Grain, detrital::Detrital, wxauth::WxAuth, rind::Rind; timeseries::AbstractRange=0:1:2e6)
     #d=40 # μm grain size 
     #timeseries = 0:1:2e6
 
@@ -130,7 +85,7 @@ function comminweath(diameter::Number, grain::NamedTuple, detrital::NamedTuple, 
     Nr234_ev[1], Nr230_ev[1] = Nr_234i, Nr_230i
                 
 
-    for j = 2: length(timeseries) #start on second timestep.
+    @inbounds for j = 2: length(timeseries) #start on second timestep.
 
     #### I THINK THE STEP ON `tlin[j]` SHOULD ACTUALLY BE `j-1` ~~ CHANGE AFTER REPRODUCING OUTPUT
         k= wxauth.k * wxauth.k_power * timeseries[j]^(wxauth.k_power-1)
@@ -205,17 +160,6 @@ function drawdates(dates,evs::NamedTuple)
 
     (; A234, A230, cU)
 end
-
-
-## Tests to compare to old data ~~ these all reproduce the old results.
-evs=comminweath(40,grain,detrital,wxauth,rind)
-U_dtr =  [ 210 180 160 130]' #ng/g 
-#
-outs40 = drawdates([0, 400, 1500],comminweath(40,grain,detrital,wxauth,rind))
-outs30 = drawdates([0, 400, 1500],comminweath(30,grain,update(detrital,:cU,180),wxauth,rind))
-outs15a = drawdates([0, 400, 1500],comminweath(15,grain,update(detrital,:cU,160),wxauth,rind))
-outs15b = drawdates([0, 400, 1500],comminweath(15,grain,update(detrital,:cU,130),wxauth,rind))
-
 
 include("regressions.jl")
 include("visualize.jl")
