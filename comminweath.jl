@@ -1,26 +1,4 @@
-## Simulates U-series comminution system for multiple grain-sizes
- # of multiple ages, as well as optional
- # production of an authigenic "weathered" phase
- # implantation of U-series nuclides from a high-[U] authigenic rind.
- # ~~ Graham Harper Edwards ~~
-
-
-include("measured-data.jl")
-meas = TaylorIII
-include("decay-constants.jl")
-include("structs.jl")
-
-cd(@__DIR__)
-run_name = "comminwx_out" #comminweath_out
-fileout_prefix = "../comminweath_results/"
-## Grain Sizes, Ages, Detrital initials:
-a = [40. 30. 15. 15.]' *1e-6 #um -> m ~~ Grain diameters
-tcom = [ 0 400 1500]' # ka
-#Variable [U] with grain size
-U_dtr =  [ 210 180 160 130]' #ng/g 
-    #|| [U]s correspond with grain sizes in 'a' above
-    # should be [300 210 180 160]
-    
+# comminweath, drawdates    
 
 """
 
@@ -170,5 +148,31 @@ function drawdates(dates,evs::NamedTuple)
     (; A234, A230, cU)
 end
 
-include("regressions.jl")
-include("visualize.jl")
+
+"""
+
+```julia
+linreg(x::Vector,y::Vector)
+```
+
+Calculate a linear regression by QR decomposition for values of independent variable `x` and dependent variable `y`.
+
+Returns a `NamedTuple` with slope `m`, intercept `b`, and coefficient of determination `r²`
+"""
+function linreg(x::AbstractVector, y::AbstractVector)
+    @assert length(x) == length(y)
+    # Calculate linear regression by QR decomposition
+    b,m = [ones(length(x)) x] \ y # as in `y = mx+b`
+
+    # Calculate r²
+    sst = ssr = zero(m)
+    μy = sum(y)/length(y) 
+    
+    @inbounds for  i in eachindex(y)
+        ssr += (y[i] - (m*x[i] + b))^2
+        sst += (y[i] - μy)^2
+    end
+    r² = 1 - ssr/sst
+
+    (; m,b,r²)
+end 
