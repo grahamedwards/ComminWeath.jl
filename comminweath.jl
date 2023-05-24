@@ -147,7 +147,7 @@ end
 
 function drawdate(d::Number,evs::NamedTuple)
     d *= 1e3
-    @assert d ∈ evs.t "$(dates[i]) ka is not a simulated timestep. Re-run comminweath with an expanded timeseries."
+    @assert d ∈ evs.t "$(d*1e-3) ka is not a simulated timestep. Re-run comminweath with an expanded timeseries."
     
     t = searchsortedfirst(evs.t,d)
     (; A234=evs.A234[t], A230=evs.A230[t], cU=evs.cU[t])
