@@ -127,9 +127,8 @@ function plotauthreplace(a::Vector,t::Vector;f=Figure(), cU::Vector=[],g::Grain=
     Legend(f[1,1],ax,tellheight=false,tellwidth=false,halign=:right,valign=:top,margin=(10,10,10,10))
     f
 end
-wx=WxAuth()
-wx.k=2e-8
-plotauthreplace([15,30,40],t,cU=cU,wx=2e-8)
+wx=WxAuth(); wx.k=2e-8
+plotauthreplace([15,30,40],t,cU=cU)
 
 # Calculate fraction clay from cUd
 #auth_pct = 100*(cUd .- repeat(U_dtr,1,length(tcom))) ./ (U_auth .- U_dtr)
