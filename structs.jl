@@ -78,7 +78,7 @@ Constructor function `WxAuth()` builds an instance with default values.
 ---
     
 | field | units | description | 
-| ----- | ----- | ----------- |
+| :----- | :-----: | :----------- |
 | `sa_dependent` | (boolean) | Is weathering surface area dependent?  |
 | `k`   | g m⁻² a⁻¹ | rate of alteration to authigenic phaseⁱ |
 | `k_power` |   | exponent on `k` for (time-dependent) power-law weathering rate |
@@ -87,8 +87,8 @@ Constructor function `WxAuth()` builds an instance with default values.
 | `r08` |       | (²³⁰Th/²³⁸U) of authigenic phase | 
     
 ---
-ⁱ g m⁻² a⁻¹ if `sa_exponent``==`true`, (g g⁻¹) a⁻¹ if `sa_exponent`==`false`. This is an initial rate if `k_power` ≠ 1. 
-ⁱⁱ Not explored in this study, so it is set to 1 for a constant weathering rate, but it's there if you want it!
+ⁱg m⁻² a⁻¹ if `sa_exponent`==`true`, (g g⁻¹) a⁻¹ if `sa_exponent`==`false`. This is an initial rate if `k_power` ≠ 1. 
+ⁱⁱNot explored in this study, so it is set to 1 for a constant weathering rate, but it's there if you want it!
 """
 mutable struct WxAuth
     sa_dependent::Bool

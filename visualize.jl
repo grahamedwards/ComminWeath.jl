@@ -96,7 +96,7 @@ function calcU(a::Vector,t::Vector;cU::Vector=[],g::Grain=Grain(),d::Detrital=De
         isempty(cU) || (d.cU=cU[i])
         cwouts[i] = comminweath(a[i],g,d,wx,r)
         for j in eachindex(t)
-            cUout[i,j] = drawdate(t[j],cwouts[i]).cU/1000
+            cUout[i,j] = drawdate(t[j],cwouts[i]).cU
         end
     end
     cUout
@@ -106,6 +106,7 @@ function plotcU(a::Vector,t::Vector;f=Figure(), cU::Vector=[],g::Grain=Grain(),d
     set_theme!(; palette=(; color=[:gray40,:hotpink2,:midnightblue,ColorSchemes.seaborn_colorblind6...]))
     ax=Axis(f[1,1], xlabel="Grain diameter (μm)",ylabel="[U] (μg g⁻¹)",xgridvisible=false,ygridvisible=false)
     cUout = calcU(a,t,cU=cU, g=g, d=d,wx=wx,r=r)
+    cUout .*= 1e-3
     for i in eachindex(t)
         scatterlines!(ax,a,view(cUout,:,i),label=string(Int(t[i])," ka"))
     end
@@ -119,16 +120,16 @@ function plotauthreplace(a::Vector,t::Vector;f=Figure(), cU::Vector=[],g::Grain=
     ax=Axis(f[1,1], xlabel="Grain diameter (μm)",ylabel="[U] (μg g⁻¹)",xgridvisible=false,ygridvisible=false)
     cUout = calcU(a,t,cU=cU, g=g, d=d,wx=wx,r=r)
     println(cUout)
-    cUₒ= ifelse(isempty(cU),fill(d.cU,length(a)),cU) /1000
+    cUₒ= ifelse(isempty(cU),fill(d.cU,length(a)),cU)
     for i in eachindex(t)
-        authpct =  100( view(cUout,:,i) .- cUₒ ) ./ cUₒ
+        authpct =  100 .* ( view(cUout,:,i) .- cUₒ ) ./ (wx.cU .- cUₒ)
         scatterlines!(ax,a,authpct,label=string(Int(t[i])," ka"))
     end
     Legend(f[1,1],ax,tellheight=false,tellwidth=false,halign=:right,valign=:top,margin=(10,10,10,10))
     f
 end
-wx=WxAuth(); wx.k=2e-8
-plotauthreplace([15,30,40],t,cU=cU)
+wx=WxAuth(); wx.k=4e-8
+plotauthreplace([15,30,40],t,cU=cU,wx=wx)
 
 # Calculate fraction clay from cUd
 #auth_pct = 100*(cUd .- repeat(U_dtr,1,length(tcom))) ./ (U_auth .- U_dtr)
