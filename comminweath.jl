@@ -133,21 +133,25 @@ drawdates(dates, evs::NamedTuple)
 
 Returns the (²³⁴U/²³⁸U) (`A234`), (²³⁰Th/²³⁸U) (`A230`), and U concentration (`cU`) of a sediment grain for a collection of `dates` in a U-series history (`evs`) from the `comminweath` function.
 """
-function drawdates(dates,evs::NamedTuple)
+function drawdates(dates::AbstractVector,evs::NamedTuple)
     n = length(dates)
-    d = dates .* 1e3
+    
+    A234, A230, cU = similar(evs.A234,n), similar(evs.A230,n), similar(evs.cU,n)
 
-    A234, A230, cU = Vector{eltype(evs.A234)}(undef,n), Vector{eltype(evs.A230)}(undef,n), Vector{eltype(evs.cU)}(undef,n)
-
-    @inbounds for i in eachindex(d)
-        @assert d[i] ∈ evs.t "$(dates[i]) ka is not a simulated timestep. Re-run comminweath with an expanded timeseries."
-        t = searchsortedfirst(evs.t,d[i])
-        A234[i], A230[i], cU[i] = evs.A234[t], evs.A230[t], evs.cU[t]
+    @inbounds for i in eachindex(dates)
+        A234[i], A230[i], cU[i] = drawdate(dates[i],evs)
     end
-
     (; A234, A230, cU)
 end
 
+
+function drawdate(d::Number,evs::NamedTuple)
+    d *= 1e3
+    @assert d ∈ evs.t "$(dates[i]) ka is not a simulated timestep. Re-run comminweath with an expanded timeseries."
+    
+    t = searchsortedfirst(evs.t,d)
+    (; A234=evs.A234[t], A230=evs.A230[t], cU=evs.cU[t])
+end
 
 """
 

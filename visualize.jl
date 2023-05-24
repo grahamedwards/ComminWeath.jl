@@ -1,34 +1,135 @@
-## Plot Isochrons & Age Calculations
-using Plots; gr() #load Plots with gr backend.
-p1 = plot(A230,A234,
-                     legend=false, label = Int.(tcom'/1000),
-                     legendtitle="Age (ka)", marker = (:hexagon, 2, 0.6, :black))
-xaxis!("(230Th/238U)")
-ylabel!("(234U/238U)")
-# Plot Evolutions
-    for i=1:length(a)
-        global p1 =plot!(A230_ev[i,length(tcom),:],A234_ev[i,length(tcom),:],
-        color= :gray, linewidth = 0.1, label="")
-    end
-p1=plot!(meas.r08,meas.r48,xerr=meas.u08, yerr=meas.u48)
-# Plot slope vs. age
-p2 = plot(tcom/1000,slope_int[:,2], label ="") #, ylim=(0,0.6))
-ylabel!("slope");xlabel!("Age (ka)")
+using CairoMakie, ColorSchemes
 
-# Plot [U]_detrital vs. grain size
-p3 = plot(repeat(a,1,length(tcom))*1e6,cUd/1e3,
-legend=false, label = Int.(tcom'/1000),
-legendtitle="Age (ka)", marker = (:hexagon, 2, 0.6, :black))
-ylabel!("[U] (ppm)");xlabel!("Grain size (um)")
+
+
+## Plot 234/238 vs 230/238
+
+g= Grain()
+d=Detrital()
+wx = WxAuth()
+r = Rind()
+
+a = [ 40., 30., 15.] #um ~ Grain diameters
+t = [0.,400, 1500]
+cU = [210., 180., 160.]
+
+function plotUseries(a::Vector,t::Vector;f=Figure(), cU::Vector=[],g::Grain=Grain(),d::Detrital=Detrital(),wx::WxAuth=WxAuth(),r::Rind=Rind(),meas::NamedTuple=(;))
+    set_theme!(; palette=(; color=[:hotpink2,:midnightblue,ColorSchemes.seaborn_colorblind6...]))
+    isempty(cU) || @assert length(cU)==length(a) "cU and a must be the same length"
+
+    A234 = zeros(Float64, length(a),length(t))
+    A230 = copy(A234)
+    cUout = copy(A234)
+    cwouts = Vector{NamedTuple}(undef,length(a))
+
+    ax = Axis(f[1,1], xlabel="(²³⁰Th/²³⁸U)",ylabel="(²³⁴U/²³⁸U)",xgridvisible=false,ygridvisible=false)
+    if !isempty(meas)
+        errorbars!(ax, meas.r08, meas.r48, meas.u08, whiskerwidth = 0, direction = :x,linewidth=2,color=:black)
+        errorbars!(ax, meas.r08, meas.r48, meas.u48, whiskerwidth = 0, direction = :y,linewidth=2,color=:black)
+    end
+    for i in eachindex(a)
+        isempty(cU) || (d.cU=cU[i])
+        cwouts[i] = comminweath(a[i],g,d,wx,r)
+        for j in eachindex(t)
+            Uout = drawdate(t[j],cwouts[i])
+            A234[i,j] = Uout.A234
+            A230[i,j] = Uout.A230
+            cUout[i,j] = Uout.cU
+        end
+        tjmax = searchsortedfirst(cwouts[i].t,maximum(t)*1e3)
+        lines!(ax,cwouts[i].A230[1:tjmax],cwouts[i].A234[1:tjmax],linewidth=1,color=:gray60,)
+    end
+
+    for i in eachindex(t)
+        x = view(A230,:,i)
+        y = view(A234,:,i)
+        if !iszero(t[i])
+            reg = linreg(x,y)
+            lines!(ax,[first(x),last(x)],[reg.b+reg.m*first(x),reg.b+reg.m*last(x)],label=string(Int(t[i])," ka"),linewidth=2)
+        end
+        scatter!(ax,x,y,markersize=10,color=:gray40)
+    end
+    Legend(f[1,1],ax,tellheight=false,tellwidth=false,halign=:left,valign=:top,margin=(10,10,10,10))
+    f
+end
+
+plotUseries(a,t,cU=cU,meas=meas)
+
+## Plot slope vs. age 
+function calcslopes(t::AbstractVector; a::Vector=[10.,20.,30.,40.],cU::Vector=[],g::Grain=Grain(),d::Detrital=Detrital(),wx::WxAuth=WxAuth(),r::Rind=Rind())
+    A234 = zeros(Float64, length(a),length(t))
+    A230 = copy(A234)
+    cwouts = Vector{NamedTuple}(undef,length(a))
+    slopes = similar(t,Float64)
+
+    for i in eachindex(a)
+        isempty(cU) || (d.cU=cU[i])
+        cwouts[i] = comminweath(a[i],g,d,wx,r)
+        for j in eachindex(t)
+            Uout = drawdate(t[j],cwouts[i])
+            A234[i,j] = Uout.A234
+            A230[i,j] = Uout.A230
+        end
+    end
+    for i in eachindex(t)
+        x = view(A230,:,i)
+        y = view(A234,:,i)
+        if !iszero(t[i])
+            slopes[i] = linreg(x,y).m
+        end
+    end
+    slopes
+end
+
+function plotslopes(t::AbstractVector;f=Figure(), a::Vector=[10.,20.,30.,40.],cU::Vector=[],g::Grain=Grain(),d::Detrital=Detrital(),wx::WxAuth=WxAuth(),r::Rind=Rind())
+    slopes = calcslopes(t,a=a,cU=cU,g=g,d=d,wx=wx,r=r)
+    Axis(f[1,1], xlabel="Age (ka)", ylabel="slope",xgridvisible=false,ygridvisible=false)
+    lines!(t,slopes,color=:black,linewidth=2)
+    f
+end
+plotslopes(1:1500.)
+
+function calcU(a::Vector,t::Vector;cU::Vector=[],g::Grain=Grain(),d::Detrital=Detrital(),wx::WxAuth=WxAuth(),r::Rind=Rind())
+    cUout = zeros(Float64, length(a),length(t))
+    cwouts = Vector{NamedTuple}(undef,length(a))
+    for i in eachindex(a)
+        isempty(cU) || (d.cU=cU[i])
+        cwouts[i] = comminweath(a[i],g,d,wx,r)
+        for j in eachindex(t)
+            cUout[i,j] = drawdate(t[j],cwouts[i]).cU/1000
+        end
+    end
+    cUout
+end
+
+function plotcU(a::Vector,t::Vector;f=Figure(), cU::Vector=[],g::Grain=Grain(),d::Detrital=Detrital(),wx::WxAuth=WxAuth(),r::Rind=Rind())
+    set_theme!(; palette=(; color=[:gray40,:hotpink2,:midnightblue,ColorSchemes.seaborn_colorblind6...]))
+    ax=Axis(f[1,1], xlabel="Grain diameter (μm)",ylabel="[U] (μg g⁻¹)",xgridvisible=false,ygridvisible=false)
+    cUout = calcU(a,t,cU=cU, g=g, d=d,wx=wx,r=r)
+    for i in eachindex(t)
+        scatterlines!(ax,a,view(cUout,:,i),label=string(Int(t[i])," ka"))
+    end
+    Legend(f[1,1],ax,tellheight=false,tellwidth=false,halign=:left,valign=:top,margin=(10,10,10,10))
+    f
+end
+plotcU(a,t,cU=cU)
+
+function plotauthreplace(a::Vector,t::Vector;f=Figure(), cU::Vector=[],g::Grain=Grain(),d::Detrital=Detrital(),wx::WxAuth=WxAuth(),r::Rind=Rind())
+    set_theme!(; palette=(; color=[:gray40,:hotpink2,:midnightblue,ColorSchemes.seaborn_colorblind6...]))
+    ax=Axis(f[1,1], xlabel="Grain diameter (μm)",ylabel="[U] (μg g⁻¹)",xgridvisible=false,ygridvisible=false)
+    cUout = calcU(a,t,cU=cU, g=g, d=d,wx=wx,r=r)
+    println(cUout)
+    cUₒ= ifelse(isempty(cU),fill(d.cU,length(a)),cU) /1000
+    for i in eachindex(t)
+        authpct =  100( view(cUout,:,i) .- cUₒ ) ./ cUₒ
+        scatterlines!(ax,a,authpct,label=string(Int(t[i])," ka"))
+    end
+    Legend(f[1,1],ax,tellheight=false,tellwidth=false,halign=:right,valign=:top,margin=(10,10,10,10))
+    f
+end
+wx=WxAuth()
+wx.k=2e-8
+plotauthreplace([15,30,40],t,cU=cU,wx=2e-8)
 
 # Calculate fraction clay from cUd
-auth_pct = 100*(cUd .- repeat(U_dtr,1,length(tcom))) ./ (U_auth .- U_dtr)
-p4 = plot(repeat(a,1,length(tcom))*1e6,auth_pct,
-legend=false, label = Int.(tcom'/1000),
-legendtitle="Age (ka)",marker = (:hexagon, 2, 0.6, :black))
-ylabel!("Percent authigenic phase (%)");xlabel!("Grain size (um)")
-
-plot_out=plot(p1,p2,p3,p4, layout=(2,2))
-current()
-savefig(string(fileout_prefix,run_name,".pdf"))
-display(plot_out)
+#auth_pct = 100*(cUd .- repeat(U_dtr,1,length(tcom))) ./ (U_auth .- U_dtr)
