@@ -1,18 +1,5 @@
 using CairoMakie, ColorSchemes
 
-
-
-## Plot 234/238 vs 230/238
-
-g= Grain()
-d=Detrital()
-wx = WxAuth()
-r = Rind()
-
-a = [ 40., 30., 15.] #um ~ Grain diameters
-t = [0.,400, 1500]
-cU = [210., 180., 160.]
-
 function plotUseries(a::Vector,t::Vector;f=Figure(), cU::Vector=[],g::Grain=Grain(),d::Detrital=Detrital(),wx::WxAuth=WxAuth(),r::Rind=Rind(),meas::NamedTuple=(;))
     set_theme!(; palette=(; color=[:hotpink2,:midnightblue,ColorSchemes.seaborn_colorblind6...]))
     isempty(cU) || @assert length(cU)==length(a) "cU and a must be the same length"
@@ -53,9 +40,7 @@ function plotUseries(a::Vector,t::Vector;f=Figure(), cU::Vector=[],g::Grain=Grai
     f
 end
 
-plotUseries(a,t,cU=cU,meas=meas)
 
-## Plot slope vs. age 
 function calcslopes(t::AbstractVector; a::Vector=[10.,20.,30.,40.],cU::Vector=[],g::Grain=Grain(),d::Detrital=Detrital(),wx::WxAuth=WxAuth(),r::Rind=Rind())
     A234 = zeros(Float64, length(a),length(t))
     A230 = copy(A234)
@@ -87,7 +72,7 @@ function plotslopes(t::AbstractVector;f=Figure(), a::Vector=[10.,20.,30.,40.],cU
     lines!(t,slopes,color=:black,linewidth=2)
     f
 end
-plotslopes(1:1500.)
+
 
 function calcU(a::Vector,t::Vector;cU::Vector=[],g::Grain=Grain(),d::Detrital=Detrital(),wx::WxAuth=WxAuth(),r::Rind=Rind())
     cUout = zeros(Float64, length(a),length(t))
@@ -113,7 +98,7 @@ function plotcU(a::Vector,t::Vector;f=Figure(), cU::Vector=[],g::Grain=Grain(),d
     Legend(f[1,1],ax,tellheight=false,tellwidth=false,halign=:left,valign=:top,margin=(10,10,10,10))
     f
 end
-plotcU(a,t,cU=cU)
+
 
 function plotauthreplace(a::Vector,t::Vector;f=Figure(), cU::Vector=[],g::Grain=Grain(),d::Detrital=Detrital(),wx::WxAuth=WxAuth(),r::Rind=Rind())
     set_theme!(; palette=(; color=[:gray40,:hotpink2,:midnightblue,ColorSchemes.seaborn_colorblind6...]))
@@ -128,8 +113,3 @@ function plotauthreplace(a::Vector,t::Vector;f=Figure(), cU::Vector=[],g::Grain=
     Legend(f[1,1],ax,tellheight=false,tellwidth=false,halign=:right,valign=:top,margin=(10,10,10,10))
     f
 end
-wx=WxAuth(); wx.k=4e-8
-plotauthreplace([15,30,40],t,cU=cU,wx=wx)
-
-# Calculate fraction clay from cUd
-#auth_pct = 100*(cUd .- repeat(U_dtr,1,length(tcom))) ./ (U_auth .- U_dtr)

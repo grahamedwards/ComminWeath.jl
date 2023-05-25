@@ -1,0 +1,13 @@
+name = "ComminWeath"
+uuid = "25066647-bad8-40d7-98fa-f0e92ffc8a6d"
+authors = ["Graham Harper Edwards"]
+version = "1.0.0-DEV"
+
+[compat]
+julia = "1.9"
+
+[extras]
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[targets]
+test = ["Test"]
