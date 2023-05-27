@@ -11,6 +11,6 @@ This package contains a suite of functions that simulate U-series comminution sy
 
 
 ## Visualizations
-To use any of the visualizations, you will need to install a version of Makie.jl in your Julia environment. Makie has a couple of different backends available. I recommend `CairoMakie` for our purposes. To install, just type into the Julia REPL `]add CairoMakie` and hit enter. It may take a while to install.
+This package relies on [Makie.jl](https://docs.makie.org/stable/) to make its visualizations. Since plotting packages take a bit of computational overhead and slow things down, I'm leaving it up to you to install a Makie backend in your Julia environment. Makie has a couple of different backends available (e.g. [CairoMakie](https://docs.makie.org/stable/documentation/backends/cairomakie/), [GLMakie](https://docs.makie.org/stable/documentation/backends/glmakie/)). I recommend `CairoMakie` for our purposes. To install, just type into the Julia REPL `]add CairoMakie` and hit enter. It may take a little bit of time to install.
 
 Then, before making your plot, type `using CairoMakie` into the REPL and hit enter.
