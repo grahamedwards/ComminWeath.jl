@@ -1,6 +1,8 @@
 module VisualizeComminWeath
 
-using GLMakie ColorSchemes
+using GLMakie, ColorSchemes
+
+export plotUseries, plotslopes, plotcU, plotauthreplace
 
 function plotUseries(a::Vector,t::Vector;f=Figure(), cU::Vector=[],g::Grain=Grain(),d::Detrital=Detrital(),wx::WxAuth=WxAuth(),r::Rind=Rind(),meas::NamedTuple=(;))
     set_theme!(; palette=(; color=[:hotpink2,:midnightblue,ColorSchemes.seaborn_colorblind6...]))
