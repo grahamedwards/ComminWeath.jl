@@ -20,6 +20,6 @@ makedocs(;
 )
 
 deploydocs(;
-    repo="github.com/GrahamEdwards/ComminWeath.jl",
+    repo="github.com/grahamedwards/ComminWeath.jl",
     devbranch="main",
 )
