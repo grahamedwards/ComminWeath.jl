@@ -1,6 +1,6 @@
-#import ColorSchemes
 
 function plotUseries(a::Vector,t::Vector;f=Figure(), cU::Vector=[],g::Grain=Grain(),d::Detrital=Detrital(),wx::WxAuth=WxAuth(),r::Rind=Rind(),meas::NamedTuple=(;))
+    (@isdefined set_theme!) || error("You must load Makie for this function to work, e.g. using GLMakie")
     set_theme!(; palette=(; color=[:hotpink2,:midnightblue,ColorSchemes.seaborn_colorblind6...]))
     isempty(cU) || @assert length(cU)==length(a) "cU and a must be the same length"
 
@@ -41,6 +41,7 @@ function plotUseries(a::Vector,t::Vector;f=Figure(), cU::Vector=[],g::Grain=Grai
 end
 
 function plotslopes(t::AbstractVector;f=Figure(), a::Vector=[10.,20.,30.,40.],cU::Vector=[],g::Grain=Grain(),d::Detrital=Detrital(),wx::WxAuth=WxAuth(),r::Rind=Rind())
+    (@isdefined set_theme!) || error("You must load Makie for this function to work, e.g. using GLMakie")
     slopes = calcslopes(t,a=a,cU=cU,g=g,d=d,wx=wx,r=r)
     Axis(f[1,1], xlabel="Age (ka)", ylabel="slope",xgridvisible=false,ygridvisible=false)
     lines!(t,slopes,color=:black,linewidth=2)
@@ -48,6 +49,7 @@ function plotslopes(t::AbstractVector;f=Figure(), a::Vector=[10.,20.,30.,40.],cU
 end
 
 function plotcU(a::Vector,t::Vector;f=Figure(), cU::Vector=[],g::Grain=Grain(),d::Detrital=Detrital(),wx::WxAuth=WxAuth(),r::Rind=Rind())
+    (@isdefined set_theme!) || error("You must load Makie for this function to work, e.g. using GLMakie")
     set_theme!(; palette=(; color=[:gray40,:hotpink2,:midnightblue,ColorSchemes.seaborn_colorblind6...]))
     ax=Axis(f[1,1], xlabel="Grain diameter (μm)",ylabel="[U] (μg g⁻¹)",xgridvisible=false,ygridvisible=false)
     cUout = calcU(a,t,cU=cU, g=g, d=d,wx=wx,r=r)
@@ -60,6 +62,7 @@ function plotcU(a::Vector,t::Vector;f=Figure(), cU::Vector=[],g::Grain=Grain(),d
 end
 
 function plotauthreplace(a::Vector,t::Vector;f=Figure(), cU::Vector=[],g::Grain=Grain(),d::Detrital=Detrital(),wx::WxAuth=WxAuth(),r::Rind=Rind())
+    (@isdefined set_theme!) || error("You must load Makie for this function to work, e.g. using GLMakie")
     set_theme!(; palette=(; color=[:gray40,:hotpink2,:midnightblue,ColorSchemes.seaborn_colorblind6...]))
     ax=Axis(f[1,1], xlabel="Grain diameter (μm)",ylabel="[U] (μg g⁻¹)",xgridvisible=false,ygridvisible=false)
     cUout = calcU(a,t,cU=cU, g=g, d=d,wx=wx,r=r)

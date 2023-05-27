@@ -11,11 +11,10 @@ include("maths.jl")
 export Tanaka2015, TaylorI, TaylorIII, TaylorIV
 include("measured-data.jl")
 
-# Visualize is a submodule.
-module Visualize
-picture()="picture"
-#export plotUseries, plotslopes, plotcU, plotauthreplace
-#include("visualize.jl")
-end
+import ColorSchemes # for visualizations
+
+export plotUseries, plotslopes, plotcU, plotauthreplace
+include("visualize.jl")
+
 
 end
