@@ -7,8 +7,9 @@
 
 Exploring the effects of comminution and weathering on the U-series systematics of sediments.
 
-This package contains a suite of functions that simulate U-series comminution systematics of fine-grained sediments. Incorporates replacement of detrital material with an insoluble authigenic "weathered" phase and implantation of U-series nuclides from a soluble authigenic rind.  
+This package contains a suite of functions that simulate U-series comminution systematics of fine-grained sediments. Incorporates replacement of detrital material with an insoluble authigenic "weathered" phase and implantation of U-series nuclides from a soluble authigenic rind.
 
+🚧 This package is fully functional, but I'm still putting together instructions, documentation, and examples. 🚧
 
 ## Visualizations
 This package relies on [Makie.jl](https://docs.makie.org/stable/) to make its visualizations. Since plotting packages take a bit of computational overhead and slow things down, I'm leaving it up to you to install a Makie backend in your Julia environment. Makie has a couple of different backends available (e.g. [CairoMakie](https://docs.makie.org/stable/documentation/backends/cairomakie/), [GLMakie](https://docs.makie.org/stable/documentation/backends/glmakie/)). I recommend `CairoMakie` for our purposes. To install, just type into the Julia REPL `]add CairoMakie` and hit enter. It may take a little bit of time to install.
