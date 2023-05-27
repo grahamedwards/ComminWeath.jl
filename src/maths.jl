@@ -24,9 +24,6 @@ Outputs a `NamedTuple` containing the `timeseries` and vectors of U elemental an
 
 """
 function comminweath(diameter::Number, grain::Grain, detrital::Detrital, wxauth::WxAuth, rind::Rind; timeseries::AbstractRange=0:1:2e6)
-    #d=40 # μm grain size 
-    #timeseries = 0:1:2e6
-
     ## Prepare initial (nano)molar abundances of each isotope in each reservoir.
     Ndr_238 = detrital.cU/238 # mol 238U / g detrital sediment
     Ndr_230i = (detrital.r08 *seThU) * Ndr_238 # mol230 / g detrital sediment, initial
@@ -54,16 +51,16 @@ function comminweath(diameter::Number, grain::Grain, detrital::Detrital, wxauth:
 
     Mr_Md =  rind_rho * S * rind.p * rind_z
     ## Numerical Calculation of U-series evolution
-    dt = step(timeseries)
+    dt = float(step(timeseries))
 
-    # pre-allocate detrital evolution vectors
-    N238_ev, N234_ev, N230_ev = zero(timeseries), zero(timeseries), zero(timeseries) 
-    N238_ev[1], N234_ev[1], N230_ev[1] = Ndr_238, Ndr_234i, Ndr_230i
+    # pre-allocate detrital and non-detrital rind evolution vectors
+    N238_ev = zeros(float(eltype(timeseries)),length(timeseries))
+    N234_ev = copy(N238_ev)
+    N230_ev = copy(N238_ev)
+    Nr234_ev = copy(N238_ev)
+    Nr230_ev = copy(N238_ev)
 
-    # pre-allocate nondetrital rind evolution vectors
-    Nr234_ev,Nr230_ev = zero(timeseries), zero(timeseries)
-    Nr234_ev[1], Nr230_ev[1] = Nr_234i, Nr_230i
-                
+    N238_ev[1], N234_ev[1], N230_ev[1], Nr234_ev[1], Nr230_ev[1] = Ndr_238, Ndr_234i, Ndr_230i, Nr_234i, Nr_230i
 
     @inbounds for j = 2: length(timeseries) #start on second timestep.
 
@@ -180,3 +177,73 @@ function linreg(x::AbstractVector, y::AbstractVector)
 
     (; m,b,r²)
 end 
+
+
+"""
+
+```julia
+calcslopes(t; a, cU, g=Grain(), d=Detrital(), wx=WxAuth(), r=Rind())
+```
+
+Calculate the slopes of grain sizes in `a` (default= `[10.,20.,30.,40.]`) at times given in `t` (ka).
+
+A Vector of U concentrations (ng/g) may be passed to `cU` to simulate grain-size dependent U concentrations, but this requires `length(cU) == length(a)`.
+
+Custom parameterizations for Grain, Detrital, WxAuth, and Rind may be passed to `g`, `d`, `wx` and `r`, respectively.
+
+see also: [`Grain`](@ref), [`Detrital`](@ref), [`WxAuth`](@ref), [`Rind`](@ref)
+
+"""
+function calcslopes(t::AbstractVector; a::Vector=[10.,20.,30.,40.],cU::Vector=[],g::Grain=Grain(),d::Detrital=Detrital(),wx::WxAuth=WxAuth(),r::Rind=Rind())
+    isempty(cU) || @assert length(cU) == length(a)
+    A234 = zeros(Float64, length(a),length(t))
+    A230 = copy(A234)
+    cwouts = Vector{NamedTuple}(undef,length(a))
+    slopes = similar(t,Float64)
+
+    for i in eachindex(a)
+        isempty(cU) || (d.cU=cU[i])
+        cwouts[i] = comminweath(a[i],g,d,wx,r)
+        for j in eachindex(t)
+            Uout = drawdate(t[j],cwouts[i])
+            A234[i,j] = Uout.A234
+            A230[i,j] = Uout.A230
+        end
+    end
+    for i in eachindex(t)
+        x = view(A230,:,i)
+        y = view(A234,:,i)
+        if !iszero(t[i])
+            slopes[i] = linreg(x,y).m
+        end
+    end
+    slopes
+end
+
+"""
+
+```julia
+calcU(a, t; cU, g=Grain(), d=Detrital(), wx=WxAuth(),r=Rind())
+```
+
+Calculate the U abundance for sediments with grain sizes in `a` at times in `t` (ka).
+
+A Vector of U concentrations (ng/g) may be passed to `cU` to simulate grain-size dependent U concentrations, but this requires `length(cU) == length(a)`.
+
+Custom parameterizations for Grain, Detrital, WxAuth, and Rind may be passed to `g`, `d`, `wx` and `r`, respectively.
+
+see also: [`Grain`](@ref), [`Detrital`](@ref), [`WxAuth`](@ref), [`Rind`](@ref)
+
+"""
+function calcU(a::Vector,t::Vector;cU::Vector=[],g::Grain=Grain(),d::Detrital=Detrital(),wx::WxAuth=WxAuth(),r::Rind=Rind())
+    cUout = zeros(Float64, length(a),length(t))
+    cwouts = Vector{NamedTuple}(undef,length(a))
+    for i in eachindex(a)
+        isempty(cU) || (d.cU=cU[i])
+        cwouts[i] = comminweath(a[i],g,d,wx,r)
+        for j in eachindex(t)
+            cUout[i,j] = drawdate(t[j],cwouts[i]).cU
+        end
+    end
+    cUout
+end

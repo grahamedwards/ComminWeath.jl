@@ -123,4 +123,3 @@ mutable struct Detrital
     r08::Float64
 end
 Detrital() = Detrital(200,1,1)
-

@@ -40,51 +40,11 @@ function plotUseries(a::Vector,t::Vector;f=Figure(), cU::Vector=[],g::Grain=Grai
     f
 end
 
-
-function calcslopes(t::AbstractVector; a::Vector=[10.,20.,30.,40.],cU::Vector=[],g::Grain=Grain(),d::Detrital=Detrital(),wx::WxAuth=WxAuth(),r::Rind=Rind())
-    A234 = zeros(Float64, length(a),length(t))
-    A230 = copy(A234)
-    cwouts = Vector{NamedTuple}(undef,length(a))
-    slopes = similar(t,Float64)
-
-    for i in eachindex(a)
-        isempty(cU) || (d.cU=cU[i])
-        cwouts[i] = comminweath(a[i],g,d,wx,r)
-        for j in eachindex(t)
-            Uout = drawdate(t[j],cwouts[i])
-            A234[i,j] = Uout.A234
-            A230[i,j] = Uout.A230
-        end
-    end
-    for i in eachindex(t)
-        x = view(A230,:,i)
-        y = view(A234,:,i)
-        if !iszero(t[i])
-            slopes[i] = linreg(x,y).m
-        end
-    end
-    slopes
-end
-
 function plotslopes(t::AbstractVector;f=Figure(), a::Vector=[10.,20.,30.,40.],cU::Vector=[],g::Grain=Grain(),d::Detrital=Detrital(),wx::WxAuth=WxAuth(),r::Rind=Rind())
     slopes = calcslopes(t,a=a,cU=cU,g=g,d=d,wx=wx,r=r)
     Axis(f[1,1], xlabel="Age (ka)", ylabel="slope",xgridvisible=false,ygridvisible=false)
     lines!(t,slopes,color=:black,linewidth=2)
     f
-end
-
-
-function calcU(a::Vector,t::Vector;cU::Vector=[],g::Grain=Grain(),d::Detrital=Detrital(),wx::WxAuth=WxAuth(),r::Rind=Rind())
-    cUout = zeros(Float64, length(a),length(t))
-    cwouts = Vector{NamedTuple}(undef,length(a))
-    for i in eachindex(a)
-        isempty(cU) || (d.cU=cU[i])
-        cwouts[i] = comminweath(a[i],g,d,wx,r)
-        for j in eachindex(t)
-            cUout[i,j] = drawdate(t[j],cwouts[i]).cU
-        end
-    end
-    cUout
 end
 
 function plotcU(a::Vector,t::Vector;f=Figure(), cU::Vector=[],g::Grain=Grain(),d::Detrital=Detrital(),wx::WxAuth=WxAuth(),r::Rind=Rind())
@@ -98,7 +58,6 @@ function plotcU(a::Vector,t::Vector;f=Figure(), cU::Vector=[],g::Grain=Grain(),d
     Legend(f[1,1],ax,tellheight=false,tellwidth=false,halign=:left,valign=:top,margin=(10,10,10,10))
     f
 end
-
 
 function plotauthreplace(a::Vector,t::Vector;f=Figure(), cU::Vector=[],g::Grain=Grain(),d::Detrital=Detrital(),wx::WxAuth=WxAuth(),r::Rind=Rind())
     set_theme!(; palette=(; color=[:gray40,:hotpink2,:midnightblue,ColorSchemes.seaborn_colorblind6...]))
