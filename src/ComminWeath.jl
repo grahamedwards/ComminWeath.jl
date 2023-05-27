@@ -11,6 +11,7 @@ include("maths.jl")
 export Tanaka2015, TaylorI, TaylorIII, TaylorIV
 include("measured-data.jl")
 
-# VisualizeComminWeath is a separate module, which can probably be exposed with:  push!(LOAD_PATH, @__DIR__)
+# VisualizeComminWeath is a separate module, which can probably be exposed with:  
+push!(LOAD_PATH, @__DIR__)
 
 end

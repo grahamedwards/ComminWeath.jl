@@ -3,6 +3,9 @@ uuid = "25066647-bad8-40d7-98fa-f0e92ffc8a6d"
 authors = ["Graham Harper Edwards"]
 version = "1.0.0-DEV"
 
+[deps]
+GLMakie = "e9467ef8-e4e7-5192-8a1a-b1aee30e663a"
+
 [compat]
 julia = "1.9"
 
