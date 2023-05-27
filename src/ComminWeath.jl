@@ -12,7 +12,6 @@ export Tanaka2015, TaylorI, TaylorIII, TaylorIV
 include("measured-data.jl")
 
 import ColorSchemes # for visualizations
-using Makie
 
 export plotUseries, plotslopes, plotcU, plotauthreplace
 include("visualize.jl")
