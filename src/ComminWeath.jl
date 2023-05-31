@@ -11,10 +11,4 @@ include("maths.jl")
 export Tanaka2015, TaylorI, TaylorIII, TaylorIV
 include("measured-data.jl")
 
-import ColorSchemes # for visualizations
-
-export plotUseries, plotslopes, plotcU, plotauthreplace
-include("visualize.jl")
-
-
 end
