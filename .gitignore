@@ -5,3 +5,6 @@ scratch.jl
 /Manifest.toml
 /docs/build/
 tests/
+
+examples/.ipynb_checkpoints
+examples.ipynb

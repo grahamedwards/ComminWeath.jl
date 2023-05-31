@@ -3,11 +3,7 @@ uuid = "25066647-bad8-40d7-98fa-f0e92ffc8a6d"
 authors = ["Graham Harper Edwards"]
 version = "0.1.0"
 
-[deps]
-ColorSchemes = "35d6a980-a343-548e-a6ea-1d62b119f2f4"
-
 [compat]
-ColorSchemes = "3"
 julia = "1.9"
 
 [extras]
