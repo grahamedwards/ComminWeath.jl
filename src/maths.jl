@@ -64,9 +64,7 @@ function comminweath(diameter::Number, grain::Grain, detrital::Detrital, wxauth:
 
     @inbounds for j = 2: length(timeseries) #start on second timestep.
 
-    #### I THINK THE STEP ON `tlin[j]` SHOULD ACTUALLY BE `j-1` ~~ CHANGE AFTER REPRODUCING OUTPUT
-        k= wxauth.k * wxauth.k_power * timeseries[j]^(wxauth.k_power-1)
-    #### I THINK THE STEP ON `tlin[j]` SHOULD ACTUALLY BE `j-1` ~~ CHANGE AFTER REPRODUCING OUTPUT
+        k= wxauth.k * wxauth.k_power * timeseries[j-1]^(wxauth.k_power-1)
 
         N238_ev[j] = N238_ev[j-1] +
                     dt * (
