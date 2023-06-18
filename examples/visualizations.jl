@@ -1,8 +1,11 @@
-using ComminWeath, CairoMakie, ColorSchemes
+using ComminWeath, CairoMakie
+
+ 
+const cwcolorscheme = [:hotpink2,:midnightblue, :lightslategray,:coral, :cyan3,:plum3]
 
 function plotUseries(a::Vector,t::Vector;f=Figure(), cU::Vector=[],g::Grain=Grain(),d::Detrital=Detrital(),wx::WxAuth=WxAuth(),r::Rind=Rind(),meas::NamedTuple=(;))
     (@isdefined set_theme!) || error("You must load Makie for this function to work, e.g. using CairoMakie")
-    set_theme!(; palette=(; color=[:hotpink2,:midnightblue,ColorSchemes.seaborn_colorblind6...]))
+    set_theme!(; palette=(; color=cwcolorscheme))
     isempty(cU) || @assert length(cU)==length(a) "cU and a must be the same length"
 
     A234 = zeros(Float64, length(a),length(t))
@@ -49,12 +52,23 @@ function plotslopes(t::AbstractVector;f=Figure(), a::Vector=[10.,20.,30.,40.],cU
     f
 end
 
-function plotcU(a::Vector,t::Vector;f=Figure(), cU::Vector=[],g::Grain=Grain(),d::Detrital=Detrital(),wx::WxAuth=WxAuth(),r::Rind=Rind())
+function plotcU(a::Vector,t::Vector;f=Figure(), cU::Vector=[],g::Grain=Grain(),d::Detrital=Detrital(),wx::WxAuth=WxAuth(),r::Rind=Rind(), meas::Vector=[])
     (@isdefined set_theme!) || error("You must load Makie for this function to work, e.g. using CairoMakie")
-    set_theme!(; palette=(; color=[:gray40,:hotpink2,:midnightblue,ColorSchemes.seaborn_colorblind6...]))
+    set_theme!(; palette=(; color=[:gray40, cwcolorscheme...]))
     ax=Axis(f[1,1], xlabel="Grain diameter (μm)",ylabel="[U] (μg g⁻¹)",xgridvisible=false,ygridvisible=false)
     cUout = calcU(a,t,cU=cU, g=g, d=d,wx=wx,r=r)
     cUout .*= 1e-3
+
+    if !isempty(meas)
+        @assert length(a) == length(meas)
+        for i in eachindex(a)
+            d = a[i]
+            upper=meas[i][2]
+            lower=meas[i][1]
+            band!(ax,[d-1,d+1], [lower,lower], [upper,upper],color=(:lightsteelblue,0.4))
+        end
+    end
+
     for i in eachindex(t)
         scatterlines!(ax,a,view(cUout,:,i),label=string(Int(t[i])," ka"))
     end
@@ -62,13 +76,23 @@ function plotcU(a::Vector,t::Vector;f=Figure(), cU::Vector=[],g::Grain=Grain(),d
     f
 end
 
-function plotauthreplace(a::Vector,t::Vector;f=Figure(), cU::Vector=[],g::Grain=Grain(),d::Detrital=Detrital(),wx::WxAuth=WxAuth(),r::Rind=Rind())
+function plotauthreplace(a::Vector,t::Vector;f=Figure(), cU::Vector=[],g::Grain=Grain(),d::Detrital=Detrital(),wx::WxAuth=WxAuth(),r::Rind=Rind(), meas::Vector=[])
     (@isdefined set_theme!) || error("You must load Makie for this function to work, e.g. using CairoMakie")
-    set_theme!(; palette=(; color=[:gray40,:hotpink2,:midnightblue,ColorSchemes.seaborn_colorblind6...]))
-    ax=Axis(f[1,1], xlabel="Grain diameter (μm)",ylabel="[U] (μg g⁻¹)",xgridvisible=false,ygridvisible=false)
+    set_theme!(; palette=(; color=[:gray40, cwcolorscheme...]))
+    ax=Axis(f[1,1], xlabel="Grain diameter (μm)",ylabel="Authigenic replacement (%)",xgridvisible=false,ygridvisible=false)
     cUout = calcU(a,t,cU=cU, g=g, d=d,wx=wx,r=r)
-    println(cUout)
     cUₒ= ifelse(isempty(cU),fill(d.cU,length(a)),cU)
+
+    if !isempty(meas)
+        @assert length(a) == length(meas)
+        for i in eachindex(a)
+            d = a[i]
+            upper=meas[i][2]
+            lower=meas[i][1]
+            band!(ax,[d-1,d+1], [lower,lower], [upper,upper],color=(:lightsteelblue,0.4))
+        end
+    end
+
     for i in eachindex(t)
         authpct =  100 .* ( view(cUout,:,i) .- cUₒ ) ./ (wx.cU .- cUₒ)
         scatterlines!(ax,a,authpct,label=string(Int(t[i])," ka"))

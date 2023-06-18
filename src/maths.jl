@@ -12,15 +12,14 @@ The history depends on grain morphology as well as the `detrital`, authigenic we
 
 Outputs a `NamedTuple` containing the `timeseries` and vectors of U elemental and isotopic evolutions with corresponding indices.
 
-| key  | description                                  |
-| ---- | -------------------------------------------- |
-| `t`  | `timeseries`                                 |
-|`A234`| (²³⁴U/²³⁸U) of insoluble (detrital) grain    |
-|`A230`| (²³⁰Th/²³⁸U) of insoluble (detrital) grain   |
-|`cU`  | [U] of insoluble (detrital) grain            |    
-|`etc` | NamedTuple wrapping `rind_` and `bulk_`      |
-|      | isotopic and [U] evolutions.                 |
-| ---- | -------------------------------------------- |
+| key  | description                                                          |
+| :--- | :------------------------------------------------------------------- |
+| `t`  | `timeseries`                                                         |
+|`A234`| (²³⁴U/²³⁸U) of insoluble (detrital) grain                            |
+|`A230`| (²³⁰Th/²³⁸U) of insoluble (detrital) grain                           |
+|`cU`  | [U] of insoluble (detrital) grain                                    |    
+|`etc` | NamedTuple wrapping `rind_` and `bulk_` isotopic and [U] evolutions. |
+
 
 """
 function comminweath(diameter::Number, grain::Grain, detrital::Detrital, wxauth::WxAuth, rind::Rind; timeseries::AbstractRange=0:1:2e6)
@@ -126,7 +125,7 @@ end
 drawdates(dates, evs::NamedTuple)
 ```
 
-Returns the (²³⁴U/²³⁸U) (`A234`), (²³⁰Th/²³⁸U) (`A230`), and U concentration (`cU`) of a sediment grain for a collection of `dates` in a U-series history (`evs`) from the `comminweath` function.
+Returns the (²³⁴U/²³⁸U) (`A234`), (²³⁰Th/²³⁸U) (`A230`), and U concentration (`cU`) of a sediment grain for a collection of `dates` (in ka), given a U-series history (`evs`) from the `comminweath` function.
 """
 function drawdates(dates::AbstractVector,evs::NamedTuple)
     n = length(dates)
@@ -139,7 +138,15 @@ function drawdates(dates::AbstractVector,evs::NamedTuple)
     (; A234, A230, cU)
 end
 
+"""
 
+```julia
+drawdates(dates, evs::NamedTuple)
+```
+
+Returns the (²³⁴U/²³⁸U) (`A234`), (²³⁰Th/²³⁸U) (`A230`), and U concentration (`cU`) of a sediment grain for a `dates` (in ka), given a U-series history (`evs`) from the `comminweath` function.
+
+"""
 function drawdate(d::Number,evs::NamedTuple)
     d *= 1e3
     @assert d ∈ evs.t "$(d*1e-3) ka is not a simulated timestep. Re-run comminweath with an expanded timeseries."
