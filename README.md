@@ -10,7 +10,9 @@ This package contains a suite of functions that simulate U-series comminution sy
 
 ## Usage
 
-The easiest way to use/explore the `ComminWeath.jl` package will be through the online binder jupyter notebook, which is currently under construction. 
+The easiest way to use/explore the `ComminWeath.jl` package will be through the online binder jupyter notebook, which is currently under construction: 
+
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/grahamedwards/ComminWeath.jl/main?labpath=examples%2Fexamples.ipynb)
 
 Alternatively, the online [Documentation](https://grahamedwards.github.io/ComminWeath.jl/dev/) details all of the contents of the package and their functionality.
 
