@@ -1,5 +1,4 @@
-using ComminWeath
-
+# Visualizations functions (and support) for ComminWeath.jl examples
 
 function loadcolorscheme()
     if @isdefined set_theme! 
@@ -8,7 +7,6 @@ function loadcolorscheme()
         error("You must load a Makie backend for this function to work, e.g. `using CairoMakie`")
     end
 end
-
 
 
 """

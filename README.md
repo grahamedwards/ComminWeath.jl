@@ -16,21 +16,21 @@ The easiest way to use/explore the `ComminWeath.jl` package is through the `exam
 
 ⚠️ *This may be slow to load, please be patient* ⚠️
 
-Alternatively, the online [Documentation](https://grahamedwards.github.io/ComminWeath.jl/dev/) details all of the contents of the package and their functionality, if you wish to install and use the package on your own computer.
+Alternatively, the online [Documentation](https://grahamedwards.github.io/ComminWeath.jl/dev/) details all of the contents of the package and their functionality.
 
 ## Installation
 
-To install, just type `]` into the Julia REPL to enter the built-in package manager and then type `add https://github.com/grahamedwards/ComminWeath.jl` and hit enter.
+To install `ComminWeath.jl` on your own computer, just type `]` into the Julia REPL to enter the built-in package manager and then type `add https://github.com/grahamedwards/ComminWeath.jl` and hit enter.
 
 After installing, just type `using ComminWeath` to use. 
 
-### Visualizations
+### Visualizations (not in the Binder notebook)
 
-The visualization functions (`plotUseries`, `plotslopes`, `plotcU`, `plotauthreplace`) rely on the [Makie.jl](https://docs.makie.org/stable/) plotting package. However, plotting packages are slow to load. To speed up loading times of the `ComminWeath.jl` package, the package loads these functions but not a Makie backend.
+I include visualization/plotting functions in the file `examples/visualizations.jl`, which rely on the [Makie.jl](https://docs.makie.org/stable/) plotting package. Since plotting packages are slow to load, I have not included these plotting functions in the package.
 
 If you wish to use any of these included plotting functions, you will need to install a Makie backend in your Julia environment. Makie has a couple of different backends available (e.g. [CairoMakie](https://docs.makie.org/stable/documentation/backends/cairomakie/), [GLMakie](https://docs.makie.org/stable/documentation/backends/glmakie/)). 
 
-I recommend `CairoMakie` for our purposes and include that as a dependency for use in [this Binder notebook](https://mybinder.org/v2/gh/grahamedwards/ComminWeath.jl/main?labpath=examples%2Fexamples.ipynb). To install, just type `]` into the Julia REPL to enter the built-in package manager and then type `add CairoMakie` and hit enter. It may take a little bit of time to install. Then, before using any of the plotting functions, type `using CairoMakie` into the REPL and hit enter.
+I recommend `CairoMakie` for our purposes and include that as a dependency for use in [this Binder notebook](https://mybinder.org/v2/gh/grahamedwards/ComminWeath.jl/main?labpath=examples%2Fexamples.ipynb). To install, just type `]` into the Julia REPL to enter the built-in package manager and then type `add CairoMakie` (or your backend of choice) and hit enter. It may take a little bit of time to install. Then, before using any of the plotting functions, type `using CairoMakie` into the REPL and hit enter.
 
 ---
 
