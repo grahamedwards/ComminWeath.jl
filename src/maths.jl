@@ -190,7 +190,7 @@ end
 calcslopes(t; a, cU, g=Grain(), d=Detrital(), wx=WxAuth(), r=Rind())
 ```
 
-Calculate the slopes of grain sizes in `a` (default= `[10.,20.,30.,40.]`) at times given in `t` (ka).
+Calculate the (²³⁴U/²³⁸U)-(²³⁰Th/²³⁸U) slopes of grain sizes in `a` (default= `[10.,20.,30.,40.]`) at times given in `t` (ka).
 
 A Vector of U concentrations (ng/g) may be passed to `cU` to simulate grain-size dependent U concentrations, but this requires `length(cU) == length(a)`.
 

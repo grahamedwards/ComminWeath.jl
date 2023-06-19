@@ -10,22 +10,27 @@ This package contains a suite of functions that simulate U-series comminution sy
 
 ## Usage
 
-The easiest way to use/explore the `ComminWeath.jl` package will be through the online binder jupyter notebook, which is currently under construction: 
+The easiest way to use/explore the `ComminWeath.jl` package is through the `examples.ipynb` notebook (in the [/examples](https://github.com/grahamedwards/ComminWeath.jl/tree/main/examples) directory), which runs on a JupyterHub server hosted by the [Binder project](https://mybinder.org/): 
 
-[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/grahamedwards/ComminWeath.jl/main?labpath=examples%2Fexamples.ipynb)
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/grahamedwards/ComminWeath.jl/main?labpath=examples%2Fexamples.ipynb) &larr;click this button to load
 
-Alternatively, the online [Documentation](https://grahamedwards.github.io/ComminWeath.jl/dev/) details all of the contents of the package and their functionality.
+⚠️ *This may be slow to load, please be patient* ⚠️
+
+Alternatively, the online [Documentation](https://grahamedwards.github.io/ComminWeath.jl/dev/) details all of the contents of the package and their functionality, if you wish to install and use the package on your own computer.
 
 ## Installation
 
-To install, just type into the Julia REPL `]` to enter the built-in package manager and then type `add https://github.com/grahamedwards/ComminWeath.jl` and hit enter.
+To install, just type `]` into the Julia REPL to enter the built-in package manager and then type `add https://github.com/grahamedwards/ComminWeath.jl` and hit enter.
 
 After installing, just type `using ComminWeath` to use. 
 
 ### Visualizations
-The visualization functions in the `examples/` directory package rely on [Makie.jl](https://docs.makie.org/stable/) to make visualizations. If you wish to use these, you'll need to install a Makie backend in your Julia environment. Makie has a couple of different backends available (e.g. [CairoMakie](https://docs.makie.org/stable/documentation/backends/cairomakie/), [GLMakie](https://docs.makie.org/stable/documentation/backends/glmakie/)). I recommend `CairoMakie` for our purposes. To install, just type into the Julia REPL `]add CairoMakie` and hit enter. It may take a little bit of time to install.
 
-Then, before using any of the , type `using CairoMakie` into the REPL and hit enter.
+The visualization functions (`plotUseries`, `plotslopes`, `plotcU`, `plotauthreplace`) rely on the [Makie.jl](https://docs.makie.org/stable/) plotting package. However, plotting packages are slow to load. To speed up loading times of the `ComminWeath.jl` package, the package loads these functions but not a Makie backend.
+
+If you wish to use any of these included plotting functions, you will need to install a Makie backend in your Julia environment. Makie has a couple of different backends available (e.g. [CairoMakie](https://docs.makie.org/stable/documentation/backends/cairomakie/), [GLMakie](https://docs.makie.org/stable/documentation/backends/glmakie/)). 
+
+I recommend `CairoMakie` for our purposes and include that as a dependency for use in [this Binder notebook](https://mybinder.org/v2/gh/grahamedwards/ComminWeath.jl/main?labpath=examples%2Fexamples.ipynb). To install, just type `]` into the Julia REPL to enter the built-in package manager and then type `add CairoMakie` and hit enter. It may take a little bit of time to install. Then, before using any of the plotting functions, type `using CairoMakie` into the REPL and hit enter.
 
 ---
 

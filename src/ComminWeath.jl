@@ -11,4 +11,7 @@ include("maths.jl")
 export Tanaka2015, TaylorI, TaylorIII, TaylorIV
 include("measured-data.jl")
 
+export plotUseries, plotslopes, plotcU, plotauthreplace
+include("visualizations.jl")
+
 end
