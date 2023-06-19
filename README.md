@@ -6,7 +6,9 @@
 
 Exploring the effects of comminution and weathering on the U-series systematics of sediments.
 
-This package contains a suite of functions that simulate U-series comminution systematics of fine-grained sediments. Incorporates replacement of detrital material with an insoluble authigenic "weathered" phase and implantation of U-series nuclides from a soluble authigenic rind.
+This package contains functions that simulate U-series comminution systematics of fine-grained sediments. The models incorporate replacement of detrital material with an insoluble authigenic "weathered" phase and implantation of U-series nuclides from a soluble authigenic rind.
+
+This package accompanies a forthcoming manuscript... stay tuned!
 
 ## Usage
 
@@ -24,13 +26,16 @@ To install `ComminWeath.jl` on your own computer, just type `]` into the Julia R
 
 After installing, just type `using ComminWeath` to use. 
 
-### Visualizations (not in the Binder notebook)
+## Visualizations
 
-I include visualization/plotting functions in the file `examples/visualizations.jl`, which rely on the [Makie.jl](https://docs.makie.org/stable/) plotting package. Since plotting packages are slow to load, I have not included these plotting functions in the package.
+The easiest way to explore these codes is through the aforementioned [Binder notebook](https://mybinder.org/v2/gh/grahamedwards/ComminWeath.jl/main?labpath=examples%2Fexamples.ipynb).
 
-If you wish to use any of these included plotting functions, you will need to install a Makie backend in your Julia environment. Makie has a couple of different backends available (e.g. [CairoMakie](https://docs.makie.org/stable/documentation/backends/cairomakie/), [GLMakie](https://docs.makie.org/stable/documentation/backends/glmakie/)). 
+Alternatively, the [examples/](examples/) folder contains a Jupyter notebook of examples (`examples.ipynb`) and accompanying suite of visualization functions (`visualizations.jl`). Downloading this directory or cloning the repository will allow you to run that notebook on your own computer. 
 
-I recommend `CairoMakie` for our purposes and include that as a dependency for use in [this Binder notebook](https://mybinder.org/v2/gh/grahamedwards/ComminWeath.jl/main?labpath=examples%2Fexamples.ipynb). To install, just type `]` into the Julia REPL to enter the built-in package manager and then type `add CairoMakie` (or your backend of choice) and hit enter. It may take a little bit of time to install. Then, before using any of the plotting functions, type `using CairoMakie` into the REPL and hit enter.
+### A note for plotting on your own computer:
+The visualization functions rely on the [Makie.jl](https://docs.makie.org/stable/) plotting package. If you wish to use any of these included plotting functions, you will need to install a Makie backend in your Julia environment. Makie has a couple of different backends available (e.g. [CairoMakie](https://docs.makie.org/stable/documentation/backends/cairomakie/), [GLMakie](https://docs.makie.org/stable/documentation/backends/glmakie/)). 
+
+I recommend `CairoMakie` for our purposes and include that as a package dependency for use in [the Binder notebook](https://mybinder.org/v2/gh/grahamedwards/ComminWeath.jl/main?labpath=examples%2Fexamples.ipynb). To install, just type `]` into the Julia REPL to enter the built-in package manager and then type `add CairoMakie` (or your backend of choice) and hit enter. It may take a little bit of time to install. Then, before using any of the plotting functions, type `using CairoMakie` into the REPL (or notebook cell) and hit enter.
 
 ---
 
