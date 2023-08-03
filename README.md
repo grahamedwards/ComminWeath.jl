@@ -16,7 +16,7 @@ The easiest way to use/explore the `ComminWeath.jl` package is through the `exam
 
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/grahamedwards/ComminWeath.jl/main?labpath=examples%2Fexamples.ipynb) &larr;click this button to load
 
-⚠️ *This may be slow to load, please be patient* ⚠️
+⚠️ *This may be slow to load or require a few tries, please be patient* ⚠️
 
 Alternatively, the online [Documentation](https://grahamedwards.github.io/ComminWeath.jl/dev/) details all of the contents of the package and their functionality.
 
@@ -28,7 +28,7 @@ After installing, just type `using ComminWeath` to use.
 
 ## Visualizations
 
-The easiest way to explore these codes is through the aforementioned [Binder notebook](https://mybinder.org/v2/gh/grahamedwards/ComminWeath.jl/main?labpath=examples%2Fexamples.ipynb).
+The easiest way to explore these codes is through the previously mentioned [Binder notebook](https://mybinder.org/v2/gh/grahamedwards/ComminWeath.jl/main?labpath=examples%2Fexamples.ipynb).
 
 Alternatively, the [examples/](examples/) folder contains a Jupyter notebook of examples (`examples.ipynb`) and accompanying suite of visualization functions (`visualizations.jl`). Downloading this directory or cloning the repository will allow you to run that notebook on your own computer. 
 

@@ -8,7 +8,7 @@ include("structs.jl")
 export comminweath, drawdate, drawdates, linreg, calcslopes, calcU
 include("maths.jl")
 
-export Tanaka2015, TaylorI, TaylorIII, TaylorIV
+export TaylorI, TaylorIII, TaylorIV
 include("measured-data.jl")
 
 end

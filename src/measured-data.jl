@@ -3,7 +3,7 @@
 """
 
 ```julia
-Tanaka2015()
+ImpactChron.Tanaka2015()
 ```
 
 Returns a NamedTuple of U-series data explicitly illustrating the effects of α-recoil implantation (Tanaka+ 2015, Chemical Geology, https://doi.org/10.1016/j.chemgeo.2014.12.025).
@@ -31,7 +31,7 @@ Tanaka2015() = (
 ```julia
 TaylorI()
 ```
-Returns a NamedTuple of U-series data from fractions of Taylor I drift sediments (measured in this study).
+Returns a NamedTuple of U-series data from detrital fractions of Taylor I drift sediments (measured in this study).
 
 | fields | description |
 | :----- | :---------- |
@@ -53,7 +53,7 @@ TaylorI() = (
 ```julia
 TaylorIII()
 ```
-Returns a NamedTuple of U-series data from fractions of Taylor III drift sediments (measured in this study).
+Returns a NamedTuple of U-series data from detrital fractions of Taylor III drift sediments (measured in this study).
 
 | fields | description |
 | :----- | :---------- |
@@ -76,7 +76,7 @@ TaylorIII() = (
 ```julia
 TaylorIV()
 ```
-Returns a NamedTuple of U-series data from fractions of Taylor IV drift sediments (measured in this study).
+Returns a NamedTuple of U-series data from detrital fractions of Taylor IV drift sediments (measured in this study).
 
 | fields | description |
 | :----- | :---------- |
@@ -87,8 +87,8 @@ Returns a NamedTuple of U-series data from fractions of Taylor IV drift sediment
 
 """
 TaylorIV() = (
-    r48 = [0.989544381, 0.988045986, 1.034253721, 1.043602168, 1.015417282, 1.112719734, 1.087193038, 1.106630613], # 1.233558151, 1.562465806]
-    u48 = [0.001069865, 0.004102872, 0.003387656, 0.003343425, 0.002353557, 0.002495865, 0.007035458, 0.027496583], # 0.002354365, 0.001930919]
-    r08 = [1.04123385, 1.005395862, 1.121889924, 1.125412136, 1.077348361, 1.256509829, 1.194628943, 1.228268553], # 1.475074364, 2.111121599]
-    u08 = [0.02257361, 0.023122304, 0.037680406, 0.025937369, 0.026106258, 0.0520976, 0.047257529, 0.031318882] # 0.032148822, 0.040496305]
+    r48 = [0.989544381, 0.988045986, 1.034253721, 1.043602168, 1.015417282, 1.112719734, 1.087193038, 1.106630613], 
+    u48 = [0.001069865, 0.004102872, 0.003387656, 0.003343425, 0.002353557, 0.002495865, 0.007035458, 0.027496583], 
+    r08 = [1.04123385, 1.005395862, 1.121889924, 1.125412136, 1.077348361, 1.256509829, 1.194628943, 1.228268553], 
+    u08 = [0.02257361, 0.023122304, 0.037680406, 0.025937369, 0.026106258, 0.0520976, 0.047257529, 0.031318882] 
     )
