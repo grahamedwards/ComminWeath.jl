@@ -3,7 +3,7 @@ using Test
 
 @testset "Measured Data" begin
 
-    @test Tanaka2015() == Tanaka2015()
+    @test ComminWeath.Tanaka2015() == ComminWeath.Tanaka2015()
     @test TaylorI() == TaylorI()
     @test TaylorIII() == TaylorIII()
     @test TaylorIV() == TaylorIV()
