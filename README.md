@@ -22,7 +22,12 @@ Alternatively, the online [Documentation](https://grahamedwards.github.io/Commin
 
 ## Installation
 
-To install `ComminWeath.jl` on your own computer, just type `]` into the Julia REPL to enter the built-in package manager and then type `add https://github.com/grahamedwards/ComminWeath.jl` and hit enter.
+To install `ComminWeath.jl` on your own computer, just type `]` into the Julia REPL to enter the built-in package manager and then type
+```
+add https://github.com/grahamedwards/ComminWeath.jl
+```
+and hit enter.
+
 
 After installing, just type `using ComminWeath` to use. 
 
